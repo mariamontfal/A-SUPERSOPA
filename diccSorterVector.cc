@@ -16,13 +16,34 @@ void CreateDictionary(){
 		Dictionary.push_back(cadena);
 	}
 }
+/*
+PRE:
+	a,b son de strings no vacios
+POST:
+	El resultado es la comparación de dos palabras
+	si a > b = 1
+	si a = b = 0
+	si a < b = -1
+*/
 
-bool CompareStrings(string a, string b){ 
-	if(a.size() != b.size()) {
-		return false;
-	}
+
+int CompareStrings(string a, string b){
+	int va, vb; 
 	for(int i=0; i < a.size();++i){
-		int va, vb;
+		va = 0;
+		vb = 0;
+		la = a[i];
+		lb = b[i];
+
+		if(a[i] > 'á' && a[i] < 'ú') {
+		    la = []
+		}
+
+
+
+		if(a[i] > 'á' && a[i] < 'ú') {
+
+		}
 
 		if(a[i] >= 'a' && a[i] <= 'z'){
 			va = a[i] - 'a';
@@ -36,53 +57,14 @@ bool CompareStrings(string a, string b){
 		else if(b[i] >= 'A' && b[i] <= 'Z'){
 			vb = a[i] - 'A';
 		}
-
-		if(va != vb) return false;
+		if(va > vb || b.size() <= i)
+			return 1;
+		if(va < vb)
+			return -1;
 	}
-	return true;
-}
-
-int RecalculateInf(int inf,int sup,int pivote,string n){
-	cout << "RecalculateInf " << inf << " " << sup << " " << pivote << " " << n << endl;
-	if(inf > sup){
-		return -1;
-	}
-	else{
-		int central = (inf+sup)/2;
-		cout << "central " << central << endl;
-		cout << "palabra " << Dictionary[central] << endl << endl;
-		if(n == Dictionary[central] && Dictionary[central].size() >= pivote && Dictionary[central][pivote] - Dictionary[central-1][pivote] == 1)
-			return central;
-		else{
-			if(Dictionary[central].size() >= pivote && n <= Dictionary[central][pivote]){
-				return RecalculateInf(inf,central-1,pivote,n);
-			}
-			else {
-				return RecalculateInf(central+1,sup,pivote,n); 
-			}
-		}
-	}
-}
-
-int RecalculateSup(int inf,int sup,int pivote,char n){
-	cout << "RecalculateSup " << inf << " " << sup << " " << pivote << " " << n << endl;
-	if(inf > sup){
-		return -1;
-	}
-	else{
-		int central = (inf+sup)/2;
-		cout << "central " << central << endl;
-		cout << "palabra " << Dictionary[central] << endl;
-		if(n - Dictionary[central][pivote] == -1)
-			return central;
-		else{
-			if(n < Dictionary[central][pivote]){
-				return RecalculateSup(central+1,sup,pivote,n);
-			}
-			else
-				return RecalculateSup(inf,central-1,pivote,n);
-		}
-	}
+	if(a.size() == b.size())
+		return 0;
+	return 1;
 }
 
 void WriteDicctionary(){
@@ -101,10 +83,6 @@ Pre:
 Post:
 	-1 si la palabra no esta en el diccionario
 	>=0 si la palabra esta en el diccionario
-Coste:
-	log(n)
-Certeca: 
-	Nos aseguramos de buscar la palabra en todo el diccionario.
 */
 int FindDicctionary(int inf, int sup, string n, int pivote){
 	cout << "valores " << inf << " " << sup << " " << n << " " << pivote << endl; 
@@ -113,24 +91,18 @@ int FindDicctionary(int inf, int sup, string n, int pivote){
 	else {
 		int central;
 		central = (inf + sup)/2;
+		int cpm = CompareStrings(n, Dictionary[central]);
 		cout << "central " << central << endl; 
+		cout << "comparar " << cpm << endl;
 		cout << "palabra central " << Dictionary[central] << endl;  
 		cout << "palabra inferior " << Dictionary[inf] << endl;  
 		cout << "palabra superior " << Dictionary[sup] << endl;  
-		if(CompareStrings(n, Dictionary[central])){
+		if(cpm == 0){
 			return central;
 		}
 		else{
 			cout << endl;
-			if(n[pivote] == Dictionary[central][pivote]){
-				int newinf = RecalculateInf(inf,sup,pivote,n[pivote]);
-				cout << "inf " << newinf << endl;
-				int newsup = RecalculateSup(newinf,sup,pivote,n[pivote]);
-				cout << "sup " << newsup << endl;
-				++pivote;
-				return FindDicctionary(newinf,newsup,n,pivote);
-			}
-			else if(n[pivote] > Dictionary[central][pivote])
+			if(cpm == 1)
 				return FindDicctionary(central+1,sup,n,pivote);
 			else
 				return FindDicctionary(inf,central-1,n,pivote);
@@ -157,7 +129,6 @@ int FindDicctionaryIterative(string n){
 
 int main(){
 	CreateDictionary();
-	//WriteDicctionary();
 	cout << "Escribe una palabra para buscar" << endl;
 	string word;
 	bool end = false;
