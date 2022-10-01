@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string.h>
 using namespace std;
 
 #define LAST_CHAR '\0'
