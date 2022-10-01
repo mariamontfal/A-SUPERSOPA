@@ -17,13 +17,12 @@ class TernarySearchTree {
         Node* root;
 
     public:
-
         TernarySearchTree(){
             this->root = nullptr;
         }
         
-        TernarySearchTree(Node** root){
-            this->root = *root;
+        TernarySearchTree(Node* root){
+            this->root = root;
         }
 
         Node* insertWord(char* word){
@@ -43,9 +42,13 @@ class TernarySearchTree {
             else if(*word > (*node)->str) (*node)->rightChild = insertWord(&(*node)->rightChild, word);
             else {
                 if(*word!=LAST_CHAR) (*node)->eqChild = insertWord(&(*node)->eqChild, ++word);
-                else return nullptr; // sha de retornar null perke sino afageix el valor LAST_CHAR
+                else return nullptr; // s'ha de retornar null perque sino afageix el valor LAST_CHAR
             }
             return (*node);
+        }
+
+        bool findWord(char* word){
+            return findWord(&(this->root),word);
         }
         
         bool findWord(Node** node, char* word){
@@ -53,23 +56,17 @@ class TernarySearchTree {
             if((*node)==nullptr) return 0;
             if(*word < (*node)->str) return findWord(&(*node)->leftChild,word);
             else if(*word > (*node)->str) return findWord(&(*node)->rightChild,word);
-            else{
-                return findWord(&(*node)->eqChild, ++word);
-            }
-        }
-        
-        bool findWord(char* word){
-            return findWord(&(this->root),word);
+            return findWord(&(*node)->eqChild, ++word);
         }
 
-        void printTree(int h = 0) {
-            printTree(&(this->root), 0);
+        void printTree() {
+            printTree(&(this->root));
         }
 
         void printTree(Node** node, int h = 0, string prefix = "rot") {
             cout << '(' << prefix << ')';
             for(int i=0; i<h*2; i++) cout << "-";
-            if((*node)==nullptr) cout << "x" << endl;
+            if((*node)==nullptr) cout << "()" << endl;
             else{
                 cout << (*node)->str << endl;
                 printTree(&(*node)->leftChild,h+1,"lft");
