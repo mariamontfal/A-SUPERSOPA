@@ -1,12 +1,15 @@
 #include <iostream>
+#include <string.h>
 using namespace std;
 
-#define LAST_CHAR '0'
+#define LAST_CHAR '\0'
 
 //ESTRUCTURA NODE
 struct Node {
-    char* str;
-    Node* leftChild, rightChild, eqChild;
+    char str;
+    Node* leftChild;
+    Node* rightChild;
+    Node* eqChild;
 };
 
 //CLASSE ARBRE TERNARI DE CERCA
@@ -19,35 +22,81 @@ class TernarySearchTree {
         TernarySearchTree(){
             this->root = nullptr;
         }
+        
+        TernarySearchTree(Node** root){
+            this->root = *root;
+        }
 
-        Node* insertWord(Node* node, char* word){
-            if(node==nullptr){
-                node->str = word;
-                node->leftChild=nullptr;
-                node->rightChild=nullptr;
-                node->eqChild=nullptr;
+        Node* insertWord(char* word){
+            return insertWord(&(this->root), word);
+        }
+
+        Node* insertWord(Node** node, char* word){
+            if((*node)==nullptr){
+                (*node) = new Node();
+                (*node)->str = *word;
+                (*node)->leftChild=nullptr;
+                (*node)->rightChild=nullptr;
+                (*node)->eqChild=nullptr;
             }
 
-            if(*word < node->str) node->leftChild = insertWord(node->leftChild, word);
-            else if(*word > node->str) node->rightChild = insertWord(node->rightChild, word);
+            if(*word < (*node)->str) (*node)->leftChild = insertWord(&(*node)->leftChild, word);
+            else if(*word > (*node)->str) (*node)->rightChild = insertWord(&(*node)->rightChild, word);
             else {
-                if(*word!=LAST_CHAR) node->eqChild = insertWord(node->eqChild, ++word);
+                if(*word!=LAST_CHAR) (*node)->eqChild = insertWord(&(*node)->eqChild, ++word);
+                else return nullptr; // sha de retornar null perke sino afageix el valor LAST_CHAR
             }
-
+            return (*node);
         }
         
-        bool findWord(Node* node, char* word){
-            if(node==nullptr) return 0;
-            if(*word < node->str) return findWord(node->leftChild,word);
-            else if(*word > node->str) return findWord(node->rightChild,word);
+        bool findWord(Node** node, char* word){
+            if(*word==LAST_CHAR) return 1;
+            if((*node)==nullptr) return 0;
+            if(*word < (*node)->str) return findWord(&(*node)->leftChild,word);
+            else if(*word > (*node)->str) return findWord(&(*node)->rightChild,word);
             else{
-                if(*word==nullptr) return 1;
-                return findWord(node->eqChild, ++word);
+                return findWord(&(*node)->eqChild, ++word);
+            }
+        }
+        
+        bool findWord(char* word){
+            return findWord(&(this->root),word);
+        }
+
+        void printTree(int h = 0) {
+            printTree(&(this->root), 0);
+        }
+
+        void printTree(Node** node, int h = 0, string prefix = "rot") {
+            cout << '(' << prefix << ')';
+            for(int i=0; i<h*2; i++) cout << "-";
+            if((*node)==nullptr) cout << "x" << endl;
+            else{
+                cout << (*node)->str << endl;
+                printTree(&(*node)->leftChild,h+1,"lft");
+                printTree(&(*node)->eqChild,h+1,"eql");
+                printTree(&(*node)->rightChild,h+1,"rgt");
             }
         }
 
 };
 
 int main(){
-
+    
+    TernarySearchTree tst = TernarySearchTree();
+    tst.insertWord("b");
+    tst.insertWord("a");
+    tst.insertWord("c");
+    tst.insertWord("bZ");
+    tst.printTree();
+    cout << tst.findWord("bZ") << endl;
+    
+    cout << "Fi de programa..." << endl;
+    return 0;
 }
+
+
+
+
+
+
