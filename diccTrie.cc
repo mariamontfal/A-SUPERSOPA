@@ -20,7 +20,7 @@ class TernarySearchTree {
             this->root = nullptr;
         }
 
-        insertWord(Node* node, char* word){
+        Node* insertWord(Node* node, char* word){
             if(node==nullptr){
                 node->str = word;
                 node->leftChild=nullptr;
@@ -35,7 +35,16 @@ class TernarySearchTree {
             }
 
         }
-
+        
+        bool findWord(Node* node, char* word){
+            if(node==nullptr) return 0;
+            if(*word < node->str) return findWord(node->leftChild,word);
+            else if(*word > node->str) return findWord(node->rightChild,word);
+            else{
+                if(*word==nullptr) return 1;
+                return findWord(node->eqChild, ++word);
+            }
+        }
 
 };
 
