@@ -107,7 +107,7 @@ int main(){
     TernarySearchTree tst = TernarySearchTree();
     for(string word : wordsToAdd) tst.insertWord(&word[0]);
     tst.printTree();
-    
+
     for(string word : wordsToFind) {
         if(tst.findWord(&word[0])) cout << word << " found!" << endl;
         else cout << word << " not found." << endl;
