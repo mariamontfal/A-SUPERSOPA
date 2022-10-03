@@ -109,12 +109,7 @@ class BloomFilter{
     void modifyBitsArray(vector<string> wordsToAdd){
         int i = 0;
         while(i<wordsToAdd.size()){
-            bitsArray[h1(wordsToAdd[i])]=1;
-            bitsArray[h2(wordsToAdd[i])]=1;
-            bitsArray[h3(wordsToAdd[i])]=1;
-            bitsArray[h4(wordsToAdd[i])]=1;
-            bitsArray[h5(wordsToAdd[i])]=1;
-            bitsArray[h6(wordsToAdd[i])]=1;
+            addWord(wordsToAdd[i]);
             ++i;
         }
 
@@ -184,6 +179,15 @@ class BloomFilter{
             return found;
         }
 
+        void addWord(string word){
+            bitsArray[h1(word)]=1;
+            bitsArray[h2(word)]=1;
+            bitsArray[h3(word)]=1;
+            bitsArray[h4(word)]=1;
+            bitsArray[h5(word)]=1;
+            bitsArray[h6(word)]=1;
+        }
+
 };
 
 int main(){
@@ -203,5 +207,8 @@ int main(){
     cout<<bm.findWord("facebook")<<endl;
     cout<<bm.findWord("face")<<endl;
     cout<<bm.findWord("generous")<<endl;
+    cout<<bm.findWord("hola")<<endl;
+
+    bm.addWord("hola");
     cout<<bm.findWord("hola")<<endl;
 }
