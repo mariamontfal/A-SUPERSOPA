@@ -20,7 +20,10 @@ class BloomFilter{
         int n;
 
         //Probabilitat d'error
-        float p;
+        double p;
+
+        //Vector amb les paraules del diccionari
+        vector<string> wordsToAdd;
 
         int lengthOfArray(){
             return -(this->n * log(this->p))/(pow(log(2),2));
@@ -30,10 +33,10 @@ class BloomFilter{
             return int((this->m/this->n)*log(2));
         }
 
-        float calculateProbability(){
-            float aux = 1-(1/this->m);
+        double calculateProbability(){
+            double aux = 1.0-1.0/this->m;
             aux = pow(aux, this->k*this->n);
-            return pow(1 - aux, this->k);
+            return pow(1.0 - aux, this->k);
         }
 
         // Funcio de hash 1
@@ -106,10 +109,15 @@ class BloomFilter{
             return hash % this->m;
         }
 
-    void modifyBitsArray(vector<string> wordsToAdd){
+    void modifyBitsArray(){
         int i = 0;
         while(i<wordsToAdd.size()){
-            addWord(wordsToAdd[i]);
+                bitsArray[h1(wordsToAdd[i])]=1;
+                bitsArray[h2(wordsToAdd[i])]=1;
+                bitsArray[h3(wordsToAdd[i])]=1;
+                bitsArray[h4(wordsToAdd[i])]=1;
+                bitsArray[h5(wordsToAdd[i])]=1;
+                bitsArray[h6(wordsToAdd[i])]=1;
             ++i;
         }
 
@@ -130,10 +138,10 @@ class BloomFilter{
             this->n = wordsToAdd.size();
             this->m = lengthOfArray();
             this->k = numberOfKFunctions();
-
+            this->wordsToAdd=wordsToAdd;
             this->bitsArray = vector<bool>(m,0);
 
-            modifyBitsArray(wordsToAdd);
+            modifyBitsArray();
         }
 
         int getK(){
@@ -146,6 +154,10 @@ class BloomFilter{
 
         int getN(){
             return this->n;
+        }
+
+        double getProbability(){
+            return calculateProbability();
         }
 
         bool findWord(string word){
@@ -180,14 +192,32 @@ class BloomFilter{
         }
 
         void addWord(string word){
-            bitsArray[h1(word)]=1;
-            bitsArray[h2(word)]=1;
-            bitsArray[h3(word)]=1;
-            bitsArray[h4(word)]=1;
-            bitsArray[h5(word)]=1;
-            bitsArray[h6(word)]=1;
-        }
+            bool exists = 1;
+            exists = exists and bitsArray[h1(word)] and bitsArray[h2(word)] and bitsArray[h3(word)]
+                    and bitsArray[h4(word)] and bitsArray[h5(word)] and bitsArray[h6(word)];
 
+            if (!exists){
+                this->wordsToAdd.push_back(word);
+                this->n = wordsToAdd.size();
+                //Probabilitat massa alta, es reseteja el vector dels hash
+                if(calculateProbability()>0.05 and lengthOfArray()!=this->m){
+                    this->m=lengthOfArray();
+                    this->p=calculateProbability();
+                    fill(bitsArray.begin(), bitsArray.end(), 0);
+                    modifyBitsArray();
+                }
+
+                //Nomes es mofica el bitsArray
+                else{
+                    bitsArray[h1(word)]=1;
+                    bitsArray[h2(word)]=1;
+                    bitsArray[h3(word)]=1;
+                    bitsArray[h4(word)]=1;
+                    bitsArray[h5(word)]=1;
+                    bitsArray[h6(word)]=1;
+                }
+            }
+        }
 };
 
 int main(){
@@ -209,6 +239,44 @@ int main(){
     cout<<bm.findWord("generous")<<endl;
     cout<<bm.findWord("hola")<<endl;
 
+    cout<<bm.getN()<<endl;
     bm.addWord("hola");
-    cout<<bm.findWord("hola")<<endl;
+   /*bm.addWord("holap");
+    bm.addWord("holat");
+    bm.addWord("holaf");
+    bm.addWord("holag");
+    bm.addWord("holad");
+    bm.addWord("holas");
+    bm.addWord("holaa");
+    bm.addWord("holaaaa");
+    bm.addWord("holaaaaaa");
+    bm.addWord("holqqqqa");
+    bm.addWord("howla");
+    bm.addWord("hoela");
+    bm.addWord("hotttla");
+    bm.addWord("holttttta");
+    bm.addWord("holtttttttta");
+    cout<<bm.getProbability()<<endl;
+    cout<<bm.getM()<<endl;
+    cout<<bm.getK()<<endl;
+    cout<<bm.getN()<<endl;
+
+    bm.addWord("holplfa");
+    cout<<bm.getProbability()<<endl;
+    cout<<bm.getM()<<endl;
+    cout<<bm.getK()<<endl;
+    cout<<bm.getN()<<endl;
+    bm.addWord("holllla");
+    bm.addWord("holaaaaaa");
+    bm.addWord("holxxxa");
+    bm.addWord("holcccca");
+    bm.addWord("holvvvva");
+    bm.addWord("holaqqqq");
+    bm.addWord("houiola");
+    bm.addWord("holsjdla");
+    bm.addWord("holqlwjea");
+
+    cout<<bm.getN()<<endl;
+    cout<<bm.getProbability()<<endl;
+    cout<<bm.findWord("hola")<<endl;*/
 }
