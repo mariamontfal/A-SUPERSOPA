@@ -99,6 +99,7 @@ class TernarySearchTree {
 
 };
 
+
 int main(){
     
     string wordsToAdd[] = {"up","bug"};
