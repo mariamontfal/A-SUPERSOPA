@@ -4,7 +4,7 @@
 using namespace std;
 //#include <bits/stdc++.h>
 
-const int N = 10;
+const int N = 3;
 const int ch_MAX = 26;
 
 vector < vector<char> > superSopa;
@@ -110,5 +110,13 @@ int main(){
     printSopa();
     vector < vector <bool> > visited(N, vector<bool>(N, 0));
     string mot = "";
-    backtracking(visited,mot,0,0);
+    for(int i=0; i<N; ++i){
+        for(int j=0; j<N; ++j){
+            backtracking(visited,mot,i,j);
+        }
+    }
+    for(int i=0; i<wordsFound.size();++i){
+        cout<<wordsFound[i]<<endl;
+    }
+
 }
