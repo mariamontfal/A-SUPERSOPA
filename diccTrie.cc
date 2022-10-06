@@ -13,6 +13,12 @@ struct Node {
     Node* eqChild;
 };
 
+enum SearchResult {
+    WORD_FOUND,
+    WORD_NOT_FOUND_BUT_EXIST_SUBWORD,
+    WORD_NOT_FOUND_AND_SUBWORD_DOESNT_EXIST
+};
+
 //CLASSE ARBRE TERNARI DE CERCA
 class TernarySearchTree {
     private:
@@ -23,7 +29,7 @@ class TernarySearchTree {
         TernarySearchTree(){
             this->root = nullptr;
         }
-        
+
         TernarySearchTree(Node** root){
             this->root = *root;
         }
@@ -33,7 +39,7 @@ class TernarySearchTree {
         }
 
         Node* insertWord(Node** node, char* word){
-            if((*node)==nullptr){
+            if( (*node)==nullptr){
                 (*node) = new Node();
                 (*node)->str = *word;
                 (*node)->leftChild=nullptr;
@@ -53,26 +59,29 @@ class TernarySearchTree {
             }
             return (*node);
         }
-        
-        bool findWord(char* word){
+
+        SearchResult findWord(char* word){
             return findWord(&(this->root),word);
         }
-        
-        bool findWord(Node** node, char* word){
-            if((*node)==nullptr) return 0;
+
+        SearchResult findWord(Node** node, char* word){
+            if((*node)==nullptr) return SearchResult::WORD_NOT_FOUND_AND_SUBWORD_DOESNT_EXIST;
             if(*word < (*node)->str) return findWord(&(*node)->leftChild,word);
             else if(*word > (*node)->str) return findWord(&(*node)->rightChild,word);
             else{
                 char* nextChar = ++word;
-                if(*nextChar == LAST_CHAR and (*node)->endOfWord) return 1;
+                if(*nextChar == LAST_CHAR) {
+                    if((*node)->endOfWord == true) return SearchResult::WORD_FOUND;
+                    else return SearchResult::WORD_NOT_FOUND_BUT_EXIST_SUBWORD;
+                }
                 else return (findWord(&(*node)->eqChild, nextChar));
             }
         }
-        
+
         bool findSubWord(char* word){
             return findSubWord(&(this->root),word);
         }
-        
+
         bool findSubWord(Node** node, char* word){
             if((*word)==LAST_CHAR) return 1;
             if((*node)==nullptr) return 0;
@@ -101,17 +110,29 @@ class TernarySearchTree {
 
 
 int main(){
-    
+
     string wordsToAdd[] = {"up","bug"};
     string wordsToFind[] = {"up","bug","cut", "cup","bag","b","u","bu"};
-    
+
     TernarySearchTree tst = TernarySearchTree();
     for(string word : wordsToAdd) tst.insertWord(&word[0]);
     tst.printTree();
 
     for(string word : wordsToFind) {
-        if(tst.findWord(&word[0])) cout << word << " found!" << endl;
-        else cout << word << " not found." << endl;
+        switch(tst.findWord(&word[0]))
+        {
+            case SearchResult::WORD_FOUND:
+                cout << word << " found!" << endl;
+                break;
+            case SearchResult::WORD_NOT_FOUND_BUT_EXIST_SUBWORD:
+                cout << word << " not found but exist subword!" << endl;
+                break;
+            case SearchResult::WORD_NOT_FOUND_AND_SUBWORD_DOESNT_EXIST:
+                cout << word << " doesnt exist subword!" << endl;
+                break;
+            default:
+                break;
+        }
     }
     return 0;
 }

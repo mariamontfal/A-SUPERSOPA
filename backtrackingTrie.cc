@@ -45,46 +45,62 @@ bool isWord(string mot){
 
 
 void backtracking(vector < vector <bool> > &visited, string mot, int i, int j){
-    visited[i][j]=1;
     if (isWord(mot)) wordsFound.push_back(mot);
 
     if(posOk(i+1,j) and !visited[i+1][j]){
         mot+=superSopa[i+1][j];
+        visited[i+1][j]=1;
         backtracking(visited, mot, i+1, j);
+        visited[i+1][j]=0;
     }
 
     if(posOk(i,j+1) and !visited[i][j+1]){
         mot+=superSopa[i][j+1];
+        visited[i][j+1]=1;
         backtracking(visited, mot, i, j+1);
+        visited[i][j+1]=0;
     }
 
     if(posOk(i+1,j+1) and !visited[i+1][j+1]){
         mot+=superSopa[i+1][j+1];
+        visited[i+1][j+1]=1;
         backtracking(visited, mot, i+1, j+1);
+        visited[i+1][j+1]=0;
     }
 
     if(posOk(i-1,j) and !visited[i-1][j]){
         mot+=superSopa[i-1][j];
+        visited[i-1][j]=1;
         backtracking(visited, mot, i-1, j);
+        visited[i-1][j]=0;
     }
+
     if(posOk(i,j-1)){
         mot+=superSopa[i][j-1];
+        visited[i][j-1]=1;
         backtracking(visited, mot, i, j-1);
+        visited[i][j-1]=0;
     }
 
     if(posOk(i-1,j-1)){
         mot+=superSopa[i-1][j-1];
+        visited[i-1][j-1]=1;
         backtracking(visited, mot, i-1, j-1);
+        visited[i-1][j-1]=0;
     }
 
     if(posOk(i-1,j+1)){
         mot+=superSopa[i-1][j+1];
+        visited[i-1][j+1]=1;
         backtracking(visited, mot, i-1, j+1);
+        visited[i-1][j+1]=0;
     }
 
     if(posOk(i+1,j-1)){
         mot+=superSopa[i+1][j-1];
+        visited[i+1][j-1]=1;
         backtracking(visited, mot, i+1, j-1);
+        visited[i+1][j-1]=0;
     }
 }
 
