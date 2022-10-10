@@ -154,9 +154,8 @@ void initializeProgram() {
         obj_diccSortedVector.addWord(newWord);
         obj_diccTrie.addWord(newWord);
         obj_diccDHashing.addWord(newWord);
+        obj_diccBloomFilter.addWord(newWord);
     }
-    //obj_diccBloomFilter = diccBloomFilter(obj_diccSortedVector.data());
-
     generateSopa();
 
     clock_t end_initialization = clock();
@@ -225,7 +224,7 @@ int main(int argc, char *argv[]){
     if(argc > 1) FICHERO_ENTRADA = argv[1];
 
     initializeProgram();
-    EstructuraDatosEnUso = ED::ED_TERNARY_SEARCH_TREE;
+    EstructuraDatosEnUso = ED::ED_BLOOM_FILTER;
     executeProgram();
     WriteFile();
 

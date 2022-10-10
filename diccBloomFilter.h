@@ -8,7 +8,7 @@
        #include <vector>
        #include <math.h>
 
-       class BloomFilter {
+       class diccBloomFilter {
                private:
                    vector<bool> bitsArray;
 
